@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+    const canvas = document.querySelector('#draw')
+    const ctx = canvas.getContext('2d')//mode canvas
+    //canvas size
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+
+    ctx.strokeStyle = '#BADA55'// bursh color
+    ctx.lineJoin = 'round'
+    ctx.lineCap = 'round' // shape end of the line
+    ctx.globalCompositeOperation = 'color-burn'
+    // ctx.lineWidth = 1
+
+    let isDrawing = false
+    let lastX = 0
+    let lastY = 0
+    let color = 0
+    let size = true
+
+    function draw(e){
+        if(!isDrawing) return
+        console.log(e)
+        ctx.strokeStyle = `hsl(${color}, 100%, 50%)`
+        ctx.beginPath()
+        ctx.moveTo(lastX,lastY)
+        ctx.lineTo(e.offsetX, e.offsetY)
+        ctx.stroke();
+        [lastX, lastY] = [e.offsetX, e.offsetY]
+        color++
+        if(color === 360) color = 0
+        if(ctx.lineWidth >= 50 || ctx.lineWidth <= 1){
+          size = !size 
+        }
+        if(size){
+          ctx.lineWidth++
+        }else{
+          ctx.lineWidth--
+        }
+    }
+
+    canvas.addEventListener('mousemove', draw)
+    canvas.addEventListener('mousedown', ((e) => {
+      isDrawing = true;
+      [lastX, lastY] = [e.offsetX, e.offsetY]
+    }))
+    canvas.addEventListener('mouseup', (() => isDrawing = false))
+    canvas.addEventListener('mouseout', (() => isDrawing = false))
+
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+  }
+</style>
+
+</body>
+</html>
